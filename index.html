@@ -1,0 +1,675 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="KINETIA: páginas web con animación UI/UX. Landing, sitio corporativo y tienda en línea con precio publicado.">
+<style>html,body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<title>KINETIA Estudio Web</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: negro de laboratorio. Campo de partículas 3D vivo detrás del héroe, HUD en las esquinas, secciones como paneles de instrumento; una sola columna de 1160px */
+:root{
+  color-scheme:dark;
+  --bg:#05050A; --panel:#0B0B14; --panel-2:#11111E; --ink:#EEEDF7; --muted:#8E8CA6; --dim:#55536B;
+  --line:rgba(139,92,255,.18); --line-2:rgba(238,237,247,.08);
+  --violet:#8B5CFF; --violet-glow:rgba(139,92,255,.45); --lime:#C6FF3D; --lime-glow:rgba(198,255,61,.35); --on-lime:#05050A;
+  --display:"Space Grotesk", "Segoe UI", system-ui, sans-serif;
+  --text:"Inter", "Segoe UI", system-ui, sans-serif;
+  --mono:"JetBrains Mono", ui-monospace, Consolas, monospace;
+  --ease:cubic-bezier(.2,.8,.2,1); --ease-io:cubic-bezier(.7,0,.2,1);
+  --wrap:1160px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth; background:var(--bg)}
+body{background:var(--bg); color:var(--ink); font:16px/1.6 var(--text); -webkit-font-smoothing:antialiased; overflow-x:hidden}
+body::after{content:""; position:fixed; inset:0; pointer-events:none; z-index:50;
+  background:repeating-linear-gradient(0deg, rgba(255,255,255,.018) 0 1px, transparent 1px 3px)}
+.wrap{max-width:var(--wrap); margin:0 auto; padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px))}
+h1,h2,h3{font-family:var(--display); line-height:1.02; letter-spacing:-.025em; text-wrap:balance; margin:0}
+p{margin:0}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--lime); outline-offset:3px; border-radius:6px}
+.mono{font-family:var(--mono)}
+.eyebrow{font:500 12px/1 var(--mono); letter-spacing:.16em; text-transform:uppercase; color:var(--lime); display:inline-flex; align-items:center; gap:10px}
+.eyebrow::before{content:""; width:6px; height:6px; background:var(--lime); box-shadow:0 0 10px var(--lime); border-radius:1px}
+
+/* Barra de progreso + cursor */
+.progress{position:fixed; top:env(safe-area-inset-top, 0px); left:0; height:2px; width:100%; transform-origin:left; transform:scaleX(0); background:linear-gradient(90deg, var(--violet), var(--lime)); z-index:60; box-shadow:0 0 12px var(--lime-glow)}
+.cur-dot,.cur-ring{position:fixed; left:0; top:0; pointer-events:none; z-index:70; border-radius:50%; transform:translate(-50%,-50%); opacity:0}
+.cur-dot{width:6px; height:6px; background:var(--lime)}
+.cur-ring{width:36px; height:36px; border:1px solid rgba(198,255,61,.6); transition:width 250ms var(--ease), height 250ms var(--ease), border-color 250ms, background 250ms}
+.has-cursor .cur-dot,.has-cursor .cur-ring{opacity:1}
+.has-cursor, .has-cursor a, .has-cursor button, .has-cursor summary{cursor:none}
+.cur-ring.hot{width:64px; height:64px; border-color:var(--violet); background:rgba(139,92,255,.12)}
+
+/* Header */
+body::before{content:""; position:fixed; inset:0 0 auto; height:env(safe-area-inset-top, 0px); z-index:10; background:var(--bg)}
+header.top{position:sticky; top:env(safe-area-inset-top, 0px); z-index:40; background:rgba(5,5,10,.7); backdrop-filter:blur(14px) saturate(140%); border-bottom:1px solid var(--line-2)}
+.top .wrap{display:flex; align-items:center; justify-content:space-between; gap:16px; padding-block:12px}
+.logo{display:flex; align-items:center; gap:10px; text-decoration:none}
+.logo svg{width:30px; height:30px; flex:none; filter:drop-shadow(0 0 8px var(--violet-glow))}
+.logo b{font:700 18px/1 var(--display); letter-spacing:.22em}
+.logo .k-a,.logo .k-b{transform-box:fill-box; transform-origin:left center; animation:kin 1000ms var(--ease) both}
+.logo .k-b{animation-delay:140ms}
+.logo:hover .k-a,.logo:hover .k-b{animation:kin 700ms var(--ease)}
+@keyframes kin{0%{transform:translateX(-60%); opacity:0} 100%{transform:none; opacity:1}}
+nav.links{display:flex; gap:26px; font:500 13px/1 var(--mono); letter-spacing:.06em; text-transform:uppercase}
+nav.links a{text-decoration:none; color:var(--muted); position:relative; padding-block:6px}
+nav.links a::after{content:""; position:absolute; left:0; right:0; bottom:0; height:1px; background:var(--lime); transform:scaleX(0); transform-origin:right; transition:transform 300ms var(--ease)}
+nav.links a:hover{color:var(--ink)}
+nav.links a:hover::after{transform:scaleX(1); transform-origin:left}
+.btn{display:inline-flex; align-items:center; gap:10px; border:0; cursor:pointer; text-decoration:none; font:600 15px/1 var(--text); padding:15px 22px; border-radius:999px; position:relative; transition:box-shadow 250ms var(--ease), background 250ms; will-change:transform}
+.btn-lime{background:var(--lime); color:var(--on-lime); box-shadow:0 0 0 0 var(--lime-glow)}
+.btn-lime:hover{box-shadow:0 0 34px 2px var(--lime-glow)}
+.btn-ghost{background:rgba(255,255,255,.03); color:var(--ink); box-shadow:inset 0 0 0 1px var(--line)}
+.btn-ghost:hover{box-shadow:inset 0 0 0 1px var(--violet), 0 0 24px -4px var(--violet-glow)}
+.btn .arr{transition:transform 250ms var(--ease)}
+.btn:hover .arr{transform:translateX(5px)}
+.top .btn{padding:10px 16px; font-size:14px}
+
+/* Héroe */
+.hero{position:relative; overflow:hidden; border-bottom:1px solid var(--line-2)}
+#field{position:absolute; inset:0; width:100%; height:100%; display:block}
+.hero::after{content:""; position:absolute; inset:0; pointer-events:none;
+  background:radial-gradient(ellipse 70% 60% at 70% 40%, rgba(139,92,255,.16), transparent 70%), linear-gradient(180deg, transparent 60%, var(--bg))}
+.hero .wrap{position:relative; z-index:2; padding-block:88px 72px}
+.hud{position:absolute; z-index:2; font:11px/1.6 var(--mono); color:var(--dim); letter-spacing:.08em; text-transform:uppercase}
+.hud b{color:var(--lime); font-weight:500}
+.hud.tl{top:18px; left:max(16px, env(safe-area-inset-left, 0px))}
+.hud.tr{top:18px; right:max(16px, env(safe-area-inset-right, 0px)); text-align:right}
+.hud.br{bottom:18px; right:max(16px, env(safe-area-inset-right, 0px)); text-align:right}
+.hero h1{font-size:clamp(44px, 8.4vw, 116px); font-weight:700; max-width:12ch; margin-top:22px}
+.hero h1 .ln{display:block; overflow:hidden; padding-bottom:.06em}
+.hero h1 .ln > span{display:inline-block; animation:lineUp 1100ms var(--ease-io) both}
+.hero h1 .ln:nth-child(2) > span{animation-delay:120ms}
+.hero h1 .ln:nth-child(3) > span{animation-delay:240ms}
+@keyframes lineUp{from{transform:translateY(105%)}to{transform:none}}
+.glow{color:transparent; background:linear-gradient(100deg, var(--violet) 10%, #C9B5FF 45%, var(--lime) 90%); -webkit-background-clip:text; background-clip:text; background-size:200% 100%; animation:sheen 6s linear infinite}
+@keyframes sheen{to{background-position:-200% 0}}
+.hero-row{display:grid; grid-template-columns:minmax(0,1fr) auto; gap:32px; align-items:end; margin-top:36px}
+.hero-row p{max-width:52ch; color:var(--muted); font-size:18px}
+.hero-ctas{display:flex; gap:12px; flex-wrap:wrap}
+.stats{display:flex; gap:40px; flex-wrap:wrap; margin-top:56px; padding-top:22px; border-top:1px solid var(--line-2)}
+.stats div{display:grid; gap:4px}
+.stats b{font:700 30px/1 var(--display); font-variant-numeric:tabular-nums}
+.stats span{font:11px/1.3 var(--mono); letter-spacing:.1em; text-transform:uppercase; color:var(--dim)}
+
+/* Cinta de tecnología */
+.tape{border-bottom:1px solid var(--line-2); overflow:hidden; padding-block:16px; mask-image:linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent)}
+.tape-in{display:flex; gap:48px; width:max-content; animation:tape 32s linear infinite; font:500 13px/1 var(--mono); letter-spacing:.14em; text-transform:uppercase; color:var(--muted)}
+.tape-in span::before{content:"◆"; color:var(--violet); margin-right:14px; font-size:9px; vertical-align:2px}
+@keyframes tape{to{transform:translateX(-50%)}}
+
+/* Secciones */
+section.block{padding-block:112px 0}
+.head{display:flex; justify-content:space-between; align-items:end; gap:24px; flex-wrap:wrap; margin-bottom:36px}
+.head h2{font-size:clamp(34px, 5vw, 64px); max-width:15ch; margin-top:16px}
+.head p{max-width:44ch; color:var(--muted)}
+.idx{font:12px/1 var(--mono); color:var(--dim); letter-spacing:.1em}
+
+/* Demo de niveles */
+.demo{display:grid; grid-template-columns:minmax(0,1.6fr) minmax(0,1fr); gap:20px; align-items:stretch}
+.seg{display:flex; gap:4px; padding:5px; background:var(--panel); border:1px solid var(--line); border-radius:999px; width:max-content; max-width:100%; overflow-x:auto}
+.seg button{border:0; background:transparent; color:var(--muted); font:500 13px/1 var(--mono); letter-spacing:.04em; padding:11px 16px; border-radius:999px; cursor:pointer; white-space:nowrap; transition:color 200ms, background 200ms}
+.seg button:hover{color:var(--ink)}
+.seg button[aria-pressed="true"]{background:var(--violet); color:#fff; box-shadow:0 0 22px -2px var(--violet-glow)}
+.stage{perspective:1200px; margin-top:14px}
+.browser{background:var(--panel); border:1px solid var(--line); border-radius:16px; overflow:hidden; box-shadow:0 40px 80px -40px rgba(139,92,255,.35); transition:transform 300ms var(--ease); transform-style:preserve-3d; position:relative}
+.chrome{display:flex; align-items:center; gap:6px; padding:10px 14px; border-bottom:1px solid var(--line-2)}
+.chrome i{width:9px; height:9px; border-radius:50%; background:#2A2940}
+.chrome span{margin-left:10px; font:12px/1 var(--mono); color:var(--dim)}
+.site{position:relative; padding:28px; min-height:350px; overflow:hidden; background:linear-gradient(160deg, #2A2018, #17110D); --s-ink:#F6E6D6; --s-acc:#F08A4B; color:var(--s-ink)}
+.s-nav{display:flex; justify-content:space-between; font:600 13px/1 var(--text); position:relative; z-index:2}
+.s-nav small{font-weight:500; opacity:.7}
+.s-hero{margin-top:34px; max-width:300px; position:relative; z-index:2}
+.s-hero h3{font:700 30px/1.05 var(--display); color:var(--s-ink)}
+.s-hero p{margin-top:10px; font-size:14px; opacity:.8}
+.s-btn{display:inline-block; margin-top:16px; background:var(--s-acc); color:#1A0E06; font:600 13px/1 var(--text); padding:11px 16px; border-radius:999px}
+.s-count{position:absolute; right:28px; top:76px; text-align:right; z-index:2}
+.s-count b{display:block; font:700 34px/1 var(--display); font-variant-numeric:tabular-nums}
+.s-count small{font-size:12px; opacity:.7}
+.s-tiles{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:28px; position:relative; z-index:2; max-width:420px}
+.s-tile{background:rgba(255,255,255,.07); border-radius:10px; padding:10px; font-size:12px; font-weight:600}
+.s-tile i{display:block; height:46px; border-radius:7px; margin-bottom:8px; background:linear-gradient(135deg, var(--s-acc), #E9B07A)}
+.blob{position:absolute; border-radius:50%; filter:blur(2px); opacity:0; z-index:1; pointer-events:none}
+.blob.b1{width:180px; height:180px; right:-40px; bottom:-50px; background:radial-gradient(circle at 30% 30%, #F2A86B, transparent 70%)}
+.blob.b2{width:90px; height:90px; right:150px; top:20px; background:radial-gradient(circle at 30% 30%, #E9C46A, transparent 70%)}
+.cube{position:absolute; right:44px; bottom:30px; width:64px; height:64px; transform-style:preserve-3d; opacity:0; z-index:2}
+.cube div{position:absolute; inset:0; border-radius:8px; background:color-mix(in srgb, var(--s-acc) 85%, #fff); border:1px solid rgba(255,255,255,.4)}
+.cube .f1{transform:translateZ(32px)}.cube .f2{transform:rotateY(90deg) translateZ(32px); filter:brightness(.85)}
+.cube .f3{transform:rotateY(180deg) translateZ(32px)}.cube .f4{transform:rotateY(-90deg) translateZ(32px); filter:brightness(.9)}
+.cube .f5{transform:rotateX(90deg) translateZ(32px); filter:brightness(1.1)}.cube .f6{transform:rotateX(-90deg) translateZ(32px)}
+.s-cursor{position:absolute; width:22px; height:22px; border-radius:50%; border:2px solid var(--s-acc); pointer-events:none; opacity:0; transform:translate(-50%,-50%); z-index:3; transition:opacity 200ms}
+.play .an{animation:fadeUp 600ms var(--ease) both}
+.play .an.d1{animation-delay:80ms}.play .an.d2{animation-delay:160ms}.play .an.d3{animation-delay:240ms}.play .an.d4{animation-delay:320ms}
+@keyframes fadeUp{from{opacity:0; transform:translateY(14px)}to{opacity:1; transform:none}}
+[data-level="dinamico"] .blob,[data-level="inmersivo"] .blob{opacity:.9; animation:float 6s ease-in-out infinite alternate}
+[data-level="dinamico"] .blob.b2,[data-level="inmersivo"] .blob.b2{animation-duration:4.5s}
+@keyframes float{from{transform:translate(0,0)}to{transform:translate(-24px,-18px) scale(1.08)}}
+[data-level="dinamico"].play .s-tile,[data-level="inmersivo"].play .s-tile{animation:pop 700ms cubic-bezier(.34,1.56,.64,1) both}
+[data-level="dinamico"].play .s-tile:nth-child(2),[data-level="inmersivo"].play .s-tile:nth-child(2){animation-delay:120ms}
+[data-level="dinamico"].play .s-tile:nth-child(3),[data-level="inmersivo"].play .s-tile:nth-child(3){animation-delay:240ms}
+@keyframes pop{from{opacity:0; transform:scale(.7) translateY(20px)}to{opacity:1; transform:none}}
+[data-level="dinamico"] .s-btn,[data-level="inmersivo"] .s-btn{animation:pulse 2.2s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(240,138,75,.5)}50%{box-shadow:0 0 0 10px transparent}}
+[data-level="inmersivo"] .cube{opacity:1; animation:spin 9s linear infinite}
+@keyframes spin{from{transform:rotateX(-20deg) rotateY(0)}to{transform:rotateX(-20deg) rotateY(360deg)}}
+[data-level="inmersivo"] .site:hover .s-cursor{opacity:1}
+[data-level="inmersivo"] .site{cursor:none}
+[data-level="inmersivo"].play .s-hero h3{animation:clipIn 900ms var(--ease) both}
+@keyframes clipIn{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+
+.spec{background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:24px; display:flex; flex-direction:column; gap:18px; min-width:0; position:relative; overflow:hidden}
+.spec::before{content:""; position:absolute; inset:-1px; border-radius:16px; padding:1px; background:linear-gradient(140deg, var(--violet), transparent 40%, transparent 60%, var(--lime)); -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask-composite:exclude; pointer-events:none; opacity:.7}
+.spec h3{font-size:34px}
+.spec p{color:var(--muted); font-size:15px}
+.spec dl{display:grid; grid-template-columns:auto 1fr; gap:8px 14px; margin:0; font:12.5px/1.4 var(--mono)}
+.spec dt{color:var(--dim); text-transform:uppercase; letter-spacing:.08em}
+.spec dd{margin:0; color:var(--ink); overflow-wrap:anywhere}
+.curve{width:100%; height:90px; background:linear-gradient(var(--line-2) 1px, transparent 1px) 0 0/100% 22px, linear-gradient(90deg, var(--line-2) 1px, transparent 1px) 0 0/25px 100%; border-radius:8px}
+.curve path{fill:none; stroke:var(--lime); stroke-width:2.5; filter:drop-shadow(0 0 6px var(--lime-glow)); stroke-dasharray:400; stroke-dashoffset:0}
+.curve circle{fill:var(--lime)}
+.spec .from{margin-top:auto; display:flex; justify-content:space-between; align-items:baseline; border-top:1px solid var(--line-2); padding-top:16px; color:var(--muted); font:12px/1 var(--mono); text-transform:uppercase; letter-spacing:.08em}
+.spec .from b{font:700 30px/1 var(--display); color:var(--lime); letter-spacing:-.02em; text-transform:none}
+
+/* Precios */
+.controls{display:flex; flex-wrap:wrap; gap:12px; margin-bottom:24px}
+.cards{display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:16px; perspective:1400px}
+.card{background:var(--panel); border:1px solid var(--line-2); border-radius:18px; padding:28px; display:flex; flex-direction:column; gap:14px; position:relative; overflow:hidden; transform-style:preserve-3d; transition:transform 200ms var(--ease), border-color 300ms}
+.card::after{content:""; position:absolute; inset:0; pointer-events:none; background:radial-gradient(400px circle at var(--gx,50%) var(--gy,0%), rgba(139,92,255,.18), transparent 45%); opacity:0; transition:opacity 300ms}
+.card:hover{border-color:var(--line)}
+.card:hover::after{opacity:1}
+.card.star{border-color:rgba(198,255,61,.45); box-shadow:0 0 50px -20px var(--lime-glow)}
+.card .tag{font:500 12px/1 var(--mono); letter-spacing:.12em; text-transform:uppercase; color:var(--muted)}
+.card h3{font-size:26px}
+.price{font:700 46px/1 var(--display); letter-spacing:-.03em; font-variant-numeric:tabular-nums}
+.price small{font:500 15px/1 var(--text); color:var(--muted); letter-spacing:0}
+.price-note{font:13px/1.5 var(--mono); color:var(--muted); min-height:1.6em}
+.card ul{list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:9px; font-size:15px}
+.card li{padding-left:22px; position:relative; color:#CFCDE0}
+.card li::before{content:""; position:absolute; left:2px; top:.6em; width:7px; height:7px; background:var(--violet); box-shadow:0 0 8px var(--violet-glow); transform:rotate(45deg)}
+.card .btn{margin-top:auto; justify-content:center}
+.badge{align-self:flex-start; background:var(--lime); color:var(--on-lime); font:600 11px/1 var(--mono); letter-spacing:.08em; text-transform:uppercase; padding:7px 10px; border-radius:999px}
+.fine{margin-top:16px; font-size:14px; color:var(--muted)}
+.plus{margin-top:16px; display:flex; flex-wrap:wrap; gap:8px}
+.plus span{font:12.5px/1 var(--mono); border:1px solid var(--line); color:#CFCDE0; padding:9px 12px; border-radius:999px}
+
+/* Proceso */
+.steps{list-style:none; padding:0; margin:0; display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:1px; background:var(--line-2); border:1px solid var(--line-2); border-radius:18px; overflow:hidden}
+.steps li{background:var(--bg); padding:26px; display:flex; flex-direction:column; gap:10px; min-width:0; position:relative; transition:background 300ms}
+.steps li:hover{background:var(--panel)}
+.steps .n{font:500 40px/1 var(--display); color:transparent; -webkit-text-stroke:1px var(--violet)}
+.steps li:hover .n{color:var(--violet); text-shadow:0 0 20px var(--violet-glow)}
+.steps h3{font-size:22px}
+.steps p{color:var(--muted); font-size:15px}
+.steps .t{font:11px/1 var(--mono); color:var(--lime); letter-spacing:.1em; text-transform:uppercase; margin-top:auto}
+
+/* Comparativa */
+.table-wrap{overflow-x:auto; border:1px solid var(--line-2); border-radius:18px; background:var(--panel)}
+table{border-collapse:collapse; width:100%; min-width:680px; font-size:15px}
+th,td{text-align:left; padding:16px 18px; border-bottom:1px solid var(--line-2); vertical-align:top}
+tbody th{font:500 13px/1.4 var(--mono); color:var(--muted); text-transform:uppercase; letter-spacing:.06em}
+thead th{font:500 12px/1.2 var(--mono); color:var(--dim); text-transform:uppercase; letter-spacing:.1em}
+thead th.us{color:var(--lime)}
+td{color:#BEBCD2}
+td.us{background:rgba(139,92,255,.1); color:var(--ink); font-weight:600; box-shadow:inset 1px 0 0 var(--line), inset -1px 0 0 var(--line)}
+tr:last-child td{border-bottom:0}
+
+/* FAQ */
+.faq{display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:12px}
+details{background:var(--panel); border:1px solid var(--line-2); border-radius:14px; padding:18px 20px; transition:border-color 300ms}
+details[open]{border-color:var(--line)}
+summary{cursor:pointer; font:600 17px/1.3 var(--display); list-style:none; display:flex; justify-content:space-between; gap:12px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+"; color:var(--lime); font:400 22px/.8 var(--mono); transition:transform 300ms var(--ease)}
+details[open] summary::after{transform:rotate(45deg)}
+details p{margin-top:10px; color:var(--muted); font-size:15px}
+
+/* Contacto */
+.cta{margin-block:112px 0; position:relative; overflow:hidden; border:1px solid var(--line); border-radius:24px; padding:52px; display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:40px;
+  background:radial-gradient(600px circle at 0% 0%, rgba(139,92,255,.35), transparent 60%), radial-gradient(500px circle at 100% 100%, rgba(198,255,61,.12), transparent 60%), var(--panel)}
+.cta h2{font-size:clamp(32px, 4.4vw, 54px)}
+.cta > div > p{margin-top:16px; color:var(--muted); max-width:40ch}
+.cta .wa{margin-top:24px; font:12px/1.5 var(--mono); color:var(--dim); text-transform:uppercase; letter-spacing:.08em}
+form{display:grid; gap:12px}
+label{font:500 11px/1 var(--mono); letter-spacing:.1em; text-transform:uppercase; color:var(--muted); display:grid; gap:8px}
+input,select,textarea{font:15px/1.4 var(--text); padding:13px 14px; border-radius:10px; border:1px solid var(--line-2); background:rgba(5,5,10,.6); color:var(--ink); width:100%; transition:border-color 200ms, box-shadow 200ms; text-transform:none; letter-spacing:0}
+input:focus,select:focus,textarea:focus{outline:none; border-color:var(--violet); box-shadow:0 0 0 3px rgba(139,92,255,.2)}
+input::placeholder,textarea::placeholder{color:var(--dim)}
+.row2{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+.ok{background:var(--lime); color:var(--on-lime); padding:14px 16px; border-radius:12px; font-weight:600}
+footer{padding-block:56px 40px; color:var(--dim); font:12px/1.5 var(--mono); letter-spacing:.06em; text-transform:uppercase; display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap}
+
+/* Revelado con scroll (contenido legible en reposo) */
+@supports (animation-timeline: view()){
+  .reveal{animation:revealIn linear both; animation-timeline:view(); animation-range:entry 0% cover 30%}
+  @keyframes revealIn{from{transform:translateY(40px) scale(.98); opacity:.5; filter:blur(3px)}to{transform:none; opacity:1; filter:none}}
+}
+
+@media (max-width: 900px){
+  nav.links{display:none}
+  .hero-row,.demo,.cta{grid-template-columns:1fr}
+  .cards,.faq{grid-template-columns:1fr}
+  .steps{grid-template-columns:1fr 1fr}
+  .cta{padding:32px 22px}
+  .hud.tr,.hud.br{display:none}
+}
+@media (max-width: 560px){
+  .steps{grid-template-columns:1fr}
+  .s-count{position:static; text-align:left; margin-top:18px}
+  .site{padding:20px}
+  .row2{grid-template-columns:1fr}
+  .top .btn{display:none}
+  .stats{gap:24px}
+  .hero .wrap{padding-block:64px 48px}
+}
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation:none!important; transition:none!important}
+  .blob{opacity:.9!important}.cube{opacity:1!important}
+}
+</style>
+
+<div class="progress" id="progress"></div>
+<div class="cur-ring" id="ring"></div><div class="cur-dot" id="dot"></div>
+
+<header class="top">
+  <div class="wrap">
+    <a class="logo" href="#inicio" aria-label="KINETIA, inicio">
+      <svg viewBox="0 0 32 32" aria-hidden="true">
+        <rect x="4" y="3" width="6" height="26" rx="2" fill="#EEEDF7"/>
+        <path class="k-a" d="M12 16 L24 3 H30 L18 16 Z" fill="#8B5CFF"/>
+        <path class="k-b" d="M12 16 L24 29 H30 L18 16 Z" fill="#C6FF3D"/>
+      </svg>
+      <b>KINETIA</b>
+    </a>
+    <nav class="links" aria-label="Secciones">
+      <a href="#niveles">Niveles</a><a href="#precios">Precios</a><a href="#proceso">Proceso</a><a href="#faq">Preguntas</a>
+    </nav>
+    <a class="btn btn-lime mag" href="#contacto">Cotizar mi web <span class="arr">→</span></a>
+  </div>
+</header>
+
+<main id="inicio">
+  <section class="hero">
+    <canvas id="field" aria-hidden="true"></canvas>
+    <div class="hud tl">KNT/01 · Estudio web<br>Lat 19.43 N · Lon 99.13 W</div>
+    <div class="hud tr">Render <b id="fps">60</b> fps<br>Cursor <span id="xy">000 · 000</span></div>
+    <div class="hud br">Easing cubic-bezier(.7,0,.2,1)<br>Nivel activo <b>Inmersivo</b></div>
+    <div class="wrap">
+      <p class="eyebrow scramble">Sistema de movimiento en línea</p>
+      <h1>
+        <span class="ln"><span>Webs que</span></span>
+        <span class="ln"><span class="glow">se mueven.</span></span>
+        <span class="ln"><span>Negocios que avanzan.</span></span>
+      </h1>
+      <div class="hero-row">
+        <p>Landing, sitio corporativo o tienda en línea con animación UI/UX incluida. Precio publicado, entrega en días y la opción de que nosotros la sigamos operando cada mes.</p>
+        <div class="hero-ctas">
+          <a class="btn btn-lime mag" href="#precios">Ver precios <span class="arr">→</span></a>
+          <a class="btn btn-ghost mag" href="#niveles">Probar los niveles</a>
+        </div>
+      </div>
+      <div class="stats">
+        <div><b>3</b><span>Niveles de animación</span></div>
+        <div><b>9</b><span>Paquetes con precio fijo</span></div>
+        <div><b>7 días</b><span>Landing publicada</span></div>
+        <div><b>≥ 90</b><span>Lighthouse móvil</span></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="tape" aria-hidden="true"><div class="tape-in">
+    <span>GSAP ScrollTrigger</span><span>Three.js</span><span>Spline 3D</span><span>Lottie</span><span>Framer Motion</span><span>Shopify</span><span>Tiendanube</span><span>Webflow</span><span>Next.js</span><span>Figma</span>
+    <span>GSAP ScrollTrigger</span><span>Three.js</span><span>Spline 3D</span><span>Lottie</span><span>Framer Motion</span><span>Shopify</span><span>Tiendanube</span><span>Webflow</span><span>Next.js</span><span>Figma</span>
+  </div></div>
+
+  <section class="block wrap" id="niveles">
+    <div class="head reveal">
+      <div><p class="eyebrow scramble">01 · Niveles de movimiento</p><h2>Elige cuánto se mueve tu web.</h2></div>
+      <p>Prueba los tres niveles sobre un sitio de ejemplo. Con Inmersivo, mueve el mouse dentro de la ventana.</p>
+    </div>
+    <div class="demo">
+      <div style="min-width:0">
+        <div class="seg" role="group" aria-label="Nivel de animación">
+          <button type="button" data-l="suave" aria-pressed="false">01 Suave</button>
+          <button type="button" data-l="dinamico" aria-pressed="false">02 Dinámico</button>
+          <button type="button" data-l="inmersivo" aria-pressed="true">03 Inmersivo</button>
+        </div>
+        <div class="stage">
+          <div class="browser" id="browser" data-level="inmersivo">
+            <div class="chrome"><i></i><i></i><i></i><span>panaderiatrigal.mx · ejemplo</span></div>
+            <div class="site" id="site">
+              <div class="blob b1"></div><div class="blob b2"></div>
+              <div class="s-nav an"><span>Trigal</span><small>Menú · Pedidos · Sucursales</small></div>
+              <div class="s-hero">
+                <h3 class="an d1">Pan de masa madre, horneado hoy.</h3>
+                <p class="an d2">Pide antes de las 11:00 y recógelo caliente.</p>
+                <span class="s-btn an d3">Pedir por WhatsApp</span>
+              </div>
+              <div class="s-count an d2"><b id="count">1,240</b><small>pedidos este mes</small></div>
+              <div class="s-tiles an d4">
+                <div class="s-tile"><i></i>Hogaza</div>
+                <div class="s-tile"><i></i>Concha</div>
+                <div class="s-tile"><i></i>Croissant</div>
+              </div>
+              <div class="cube" aria-hidden="true"><div class="f1"></div><div class="f2"></div><div class="f3"></div><div class="f4"></div><div class="f5"></div><div class="f6"></div></div>
+              <div class="s-cursor" id="scursor"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <aside class="spec" aria-live="polite">
+        <p class="eyebrow">Especificación</p>
+        <h3 id="sp-name">Inmersivo</h3>
+        <p id="sp-desc">Narrativa con scroll, objetos 3D, cursor propio y el sitio entero inclinándose con tu mouse. Para marcas que quieren impresionar.</p>
+        <svg class="curve" viewBox="0 0 200 90" aria-hidden="true"><path id="sp-curve" d="M4 84 C 120 84, 60 6, 196 6"/><circle cx="196" cy="6" r="3.5"/></svg>
+        <dl>
+          <dt>Duración</dt><dd id="sp-dur">600–1200 ms</dd>
+          <dt>Curva</dt><dd id="sp-ease">cubic-bezier(.7,0,.2,1)</dd>
+          <dt>Stack</dt><dd id="sp-tech">GSAP, Three.js / Spline</dd>
+        </dl>
+        <div class="from"><span>Landing desde</span><b id="sp-price">$15,900</b></div>
+      </aside>
+    </div>
+  </section>
+
+  <section class="block wrap" id="precios">
+    <div class="head reveal">
+      <div><p class="eyebrow scramble">02 · Precios publicados</p><h2>Tu web, tu nivel, tu forma de pago.</h2></div>
+      <p>Pago único y es tuya desde el día uno, o plan Care con enganche bajo y nosotros la operamos. Precios en MXN, más IVA.</p>
+    </div>
+    <div class="controls">
+      <div class="seg" role="group" aria-label="Modalidad de pago">
+        <button type="button" data-m="unico" aria-pressed="true">Te lo entrego · pago único</button>
+        <button type="button" data-m="care" aria-pressed="false">Kinetia Care · mensual</button>
+      </div>
+      <div class="seg" role="group" aria-label="Nivel de animación para precios">
+        <button type="button" data-p="0" aria-pressed="false">Suave</button>
+        <button type="button" data-p="1" aria-pressed="false">Dinámico</button>
+        <button type="button" data-p="2" aria-pressed="true">Inmersivo</button>
+      </div>
+    </div>
+    <div class="cards" id="cards"></div>
+    <p class="fine" id="fine"></p>
+    <div class="plus" aria-label="Extras">
+      <span>Página extra $1,500</span><span>Segundo idioma +30%</span><span>Textos por página $900</span><span>50 productos extra $1,800</span><span>Logo + manual $4,500</span><span>Video animado 15 s $2,500</span>
+    </div>
+  </section>
+
+  <section class="block wrap" id="proceso">
+    <div class="head reveal">
+      <div><p class="eyebrow scramble">03 · Proceso</p><h2>De la llamada a tu web publicada en 6 pasos.</h2></div>
+      <p>Cada paso termina con algo que tú apruebas antes de seguir. Landing en 7–10 días hábiles, tienda en 4–6 semanas.</p>
+    </div>
+    <ol class="steps reveal">
+      <li><span class="n">01</span><h3>Diagnóstico</h3><p>Llamada de 30 min. Eliges producto, nivel de animación y forma de pago.</p><span class="t">Día 1</span></li>
+      <li><span class="n">02</span><h3>Contenido</h3><p>Subes logo, textos y fotos a una carpeta. Si no los tienes, los hacemos.</p><span class="t">Días 1–3</span></li>
+      <li><span class="n">03</span><h3>Diseño</h3><p>Maqueta en Figma con prototipo animado y primera ronda de cambios.</p><span class="t">Días 3–7</span></li>
+      <li><span class="n">04</span><h3>Desarrollo</h3><p>Construimos con nuestra biblioteca de componentes animados. En tiendas, cargamos productos y pagos.</p><span class="t">Días 7–20</span></li>
+      <li><span class="n">05</span><h3>Pruebas</h3><p>Revisamos en 3 celulares y 2 navegadores. Velocidad Lighthouse de 90 o más en móvil.</p><span class="t">Antes de publicar</span></li>
+      <li><span class="n">06</span><h3>Publicación</h3><p>Publicamos, te damos accesos y un video de 15 min para que la manejes. Con Care, seguimos nosotros.</p><span class="t">Entrega</span></li>
+    </ol>
+  </section>
+
+  <section class="block wrap">
+    <div class="head reveal">
+      <div><p class="eyebrow scramble">04 · Comparativa</p><h2>Calidad de agencia con precio a la vista.</h2></div>
+      <p>Rangos de mercado en México, 2026, para una landing page.</p>
+    </div>
+    <div class="table-wrap reveal">
+      <table>
+        <thead><tr><th scope="col"></th><th scope="col">Freelance</th><th scope="col">Agencia típica</th><th scope="col">Constructor (hazlo tú)</th><th scope="col" class="us">KINETIA</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Precio landing</th><td>$4,000 – $8,900</td><td>$8,000 – $25,000</td><td>$0 – $400/mes + tu tiempo</td><td class="us">$6,900 – $15,900</td></tr>
+          <tr><th scope="row">Animación UI/UX</th><td>Rara vez</td><td>Se cotiza aparte</td><td>Plantillas genéricas</td><td class="us">Incluida, 3 niveles</td></tr>
+          <tr><th scope="row">Precio publicado</th><td>A veces</td><td>Cotización</td><td>Sí</td><td class="us">Sí, 9 paquetes</td></tr>
+          <tr><th scope="row">Después de entregar</th><td>Te quedas solo</td><td>Mantenimiento $3,000+/mes</td><td>Lo haces tú</td><td class="us">Care desde $790/mes</td></tr>
+          <tr><th scope="row">Dueño del sitio</th><td>Depende</td><td>Depende</td><td>La plataforma</td><td class="us">Tú: dominio, textos y diseño</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="block wrap" id="faq">
+    <div class="head reveal"><div><p class="eyebrow scramble">05 · Preguntas</p><h2>Lo que nos preguntan antes de empezar.</h2></div></div>
+    <div class="faq">
+      <details><summary>¿La animación hace lenta mi página?</summary><p>No. Todo sitio sale con 90 o más en Lighthouse móvil, y la animación se apaga sola si el visitante tiene activado "reducir movimiento" en su teléfono.</p></details>
+      <details><summary>¿Qué pasa si cancelo Kinetia Care?</summary><p>Después de 12 meses puedes seguir, bajar a Soporte por $590/mes o llevarte el sitio pagando 2 mensualidades. Antes de 12 meses pagas el 50% de lo restante.</p></details>
+      <details><summary>¿En qué plataforma queda mi tienda?</summary><p>Shopify, Tiendanube o WooCommerce, según tu volumen. La cuota de la plataforma y las comisiones por venta las pagas directo, sin intermediarios.</p></details>
+      <details><summary>¿Puedo pagar a meses?</summary><p>Sí. Pago único con 50% para arrancar y 50% al aprobar, o 3 y 6 meses sin intereses con tarjeta.</p></details>
+      <details><summary>¿Qué cuenta como un cambio?</summary><p>Ajustes dentro de lo que ya aprobaste: textos, fotos, colores, orden. Una página o sección nueva es un extra con precio publicado.</p></details>
+      <details><summary>¿Quién gestiona mi catálogo en Shop Care?</summary><p>Nosotros. Damos de alta productos, precios e inventario, montamos banners de temporada y te mandamos un reporte de ventas cada mes.</p></details>
+    </div>
+  </section>
+
+  <section class="wrap" id="contacto">
+    <div class="cta reveal">
+      <div>
+        <p class="eyebrow">Diagnóstico gratis · 30 min</p>
+        <h2 style="margin-top:16px">Cuéntanos de tu negocio y te decimos qué web te conviene.</h2>
+        <p>Respondemos en menos de 24 horas hábiles con el paquete recomendado y su precio exacto.</p>
+        <p class="wa">WhatsApp y correo: se agregan al publicar el sitio real</p>
+      </div>
+      <form id="lead" novalidate>
+        <div class="row2">
+          <label for="f-name">Nombre<input id="f-name" name="name" required placeholder="Ana Ruiz" autocomplete="name"></label>
+          <label for="f-biz">Negocio<input id="f-biz" name="biz" required placeholder="Panadería Trigal"></label>
+        </div>
+        <label for="f-prod">¿Qué necesitas?
+          <select id="f-prod" name="prod">
+            <option>Kinetia Go · Landing</option>
+            <option>Kinetia Pro · Sitio corporativo</option>
+            <option>Kinetia Shop · Tienda en línea</option>
+            <option>Aún no sé</option>
+          </select>
+        </label>
+        <label for="f-msg">Mensaje<textarea id="f-msg" name="msg" rows="3" placeholder="Vendemos pan en 2 sucursales y queremos pedidos en línea."></textarea></label>
+        <button class="btn btn-lime" type="submit" style="justify-content:center">Agendar diagnóstico <span class="arr">→</span></button>
+        <p class="ok" id="ok" hidden></p>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer class="wrap">
+  <span>© 2026 KINETIA · Webs que se mueven. Negocios que avanzan.</span>
+  <span>Sitio demo · Precios MXN más IVA</span>
+</footer>
+
+<script>
+(function(){
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var finePointer = window.matchMedia('(pointer: fine)').matches;
+
+  /* ---------- Campo de partículas 3D del héroe ---------- */
+  var cv = document.getElementById('field'), ctx = cv.getContext('2d');
+  var W = 0, H = 0, DPR = Math.min(window.devicePixelRatio || 1, 2), pts = [], mx = 0, my = 0, tmx = 0, tmy = 0;
+  var COLS = 64, ROWS = 34;
+  for (var i = 0; i < COLS; i++) for (var j = 0; j < ROWS; j++) pts.push([i / (COLS - 1) - .5, j / (ROWS - 1) - .5]);
+  function size(){ var r = cv.getBoundingClientRect(); W = r.width; H = r.height; cv.width = W * DPR; cv.height = H * DPR; ctx.setTransform(DPR, 0, 0, DPR, 0, 0); }
+  function draw(t){
+    mx += (tmx - mx) * .05; my += (tmy - my) * .05;
+    ctx.clearRect(0, 0, W, H);
+    var cx = W * .62, cy = H * .55, sc = Math.max(W, 700) * 1.25, rotY = -.5 + mx * .35, rotX = 1.05 + my * .15;
+    var cyR = Math.cos(rotY), syR = Math.sin(rotY), cxR = Math.cos(rotX), sxR = Math.sin(rotX);
+    for (var k = 0; k < pts.length; k++){
+      var u = pts[k][0], v = pts[k][1];
+      var d = Math.sqrt(u * u + v * v);
+      var z = Math.sin(d * 14 - t * .0012) * .07 + Math.cos(u * 9 + t * .0007) * .04;
+      var x = u, y = v;
+      var x1 = x * cyR - y * syR, y1 = x * syR + y * cyR;
+      var y2 = y1 * cxR - z * sxR, z2 = y1 * sxR + z * cxR;
+      var p = 1.6 / (1.6 + y2 * 1.2 + .4);
+      var sx = cx + x1 * sc * p * .55, sy = cy + (z2 * -1) * sc * p * .55 + y2 * 40;
+      if (sx < -10 || sx > W + 10 || sy < -10 || sy > H + 10) continue;
+      var h = (z + .11) / .22;
+      var a = Math.max(.25, Math.min(1, p * .7 + h * .35));
+      ctx.fillStyle = h > .82 ? 'rgba(198,255,61,' + a + ')' : 'rgba(' + Math.round(120 + h * 80) + ',' + Math.round(90 + h * 60) + ',255,' + a + ')';
+      var s = p * (2 + h * 1.6);
+      ctx.beginPath(); ctx.arc(sx, sy, s * .6, 0, 6.283); ctx.fill();
+    }
+  }
+  var last = performance.now(), frames = 0, fpsEl = document.getElementById('fps');
+  function loop(t){
+    draw(t); frames++;
+    if (t - last > 1000){ fpsEl.textContent = frames; frames = 0; last = t; }
+    requestAnimationFrame(loop);
+  }
+  size(); window.addEventListener('resize', size);
+  if (reduce) draw(0); else requestAnimationFrame(loop);
+  var xy = document.getElementById('xy');
+  document.querySelector('.hero').addEventListener('pointermove', function(e){
+    var r = cv.getBoundingClientRect();
+    tmx = (e.clientX - r.left) / r.width - .5; tmy = (e.clientY - r.top) / r.height - .5;
+    xy.textContent = String(Math.round(e.clientX)).padStart(3,'0') + ' · ' + String(Math.round(e.clientY - r.top)).padStart(3,'0');
+  });
+
+  /* ---------- Cursor propio ---------- */
+  if (finePointer && !reduce){
+    var dot = document.getElementById('dot'), ring = document.getElementById('ring'), rx = 0, ry = 0, dx = 0, dy = 0, on = false;
+    window.addEventListener('pointermove', function(e){
+      dx = e.clientX; dy = e.clientY;
+      if (!on){ on = true; rx = dx; ry = dy; document.documentElement.classList.add('has-cursor'); }
+      dot.style.transform = 'translate(' + dx + 'px,' + dy + 'px) translate(-50%,-50%)';
+    });
+    (function follow(){ rx += (dx - rx) * .18; ry += (dy - ry) * .18; ring.style.transform = 'translate(' + rx + 'px,' + ry + 'px) translate(-50%,-50%)'; requestAnimationFrame(follow); })();
+    document.addEventListener('pointerover', function(e){ ring.classList.toggle('hot', !!e.target.closest('a,button,summary,select,input,textarea,.card')); });
+    document.addEventListener('pointerleave', function(){ document.documentElement.classList.remove('has-cursor'); on = false; });
+  }
+
+  /* ---------- Botones magnéticos ---------- */
+  if (finePointer && !reduce){
+    document.querySelectorAll('.mag').forEach(function(b){
+      b.addEventListener('pointermove', function(e){ var r = b.getBoundingClientRect(); b.style.transform = 'translate(' + ((e.clientX - r.left - r.width / 2) * .25) + 'px,' + ((e.clientY - r.top - r.height / 2) * .35) + 'px)'; });
+      b.addEventListener('pointerleave', function(){ b.style.transition = 'transform 400ms cubic-bezier(.2,.8,.2,1), box-shadow 250ms'; b.style.transform = ''; setTimeout(function(){ b.style.transition = ''; }, 400); });
+    });
+  }
+
+  /* ---------- Barra de progreso ---------- */
+  var bar = document.getElementById('progress');
+  function prog(){ var h = document.documentElement.scrollHeight - innerHeight; bar.style.transform = 'scaleX(' + (h > 0 ? scrollY / h : 0) + ')'; }
+  window.addEventListener('scroll', prog, {passive:true}); prog();
+
+  /* ---------- Texto que se descifra (solo etiquetas) ---------- */
+  var GLYPHS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#/<>_';
+  function scramble(el){
+    if (reduce || el.dataset.done) return; el.dataset.done = 1;
+    var final = el.textContent, n = 0, total = 18;
+    var id = setInterval(function(){
+      n++;
+      el.textContent = final.split('').map(function(c, i){ if (c === ' ' || i < (n / total) * final.length) return c; return GLYPHS[Math.floor(Math.random() * GLYPHS.length)]; }).join('');
+      if (n >= total){ clearInterval(id); el.textContent = final; }
+    }, 40);
+  }
+  if ('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(es){ es.forEach(function(e){ if (e.isIntersecting){ scramble(e.target); io.unobserve(e.target); } }); }, {threshold:.6});
+    document.querySelectorAll('.scramble').forEach(function(el){ io.observe(el); });
+  }
+
+  /* ---------- Demo de niveles ---------- */
+  var browser = document.getElementById('browser'), site = document.getElementById('site');
+  var LEVELS = {
+    suave:{name:'Suave', desc:'Las secciones aparecen con suavidad al hacer scroll, los botones responden al cursor y el menú se despliega con fluidez.', dur:'300–600 ms', ease:'cubic-bezier(.2,.8,.2,1)', tech:'CSS + Motion', price:'$6,900', curve:'M4 84 C 44 10, 90 6, 196 6'},
+    dinamico:{name:'Dinámico', desc:'Parallax, contadores, íconos animados y tarjetas que rebotan al aparecer. El sitio se siente vivo sin distraer.', dur:'400–700 ms', ease:'cubic-bezier(.34,1.56,.64,1)', tech:'GSAP + ScrollTrigger, Lottie', price:'$9,900', curve:'M4 84 C 72 84, 92 -10, 196 6'},
+    inmersivo:{name:'Inmersivo', desc:'Narrativa con scroll, objetos 3D, cursor propio y el sitio entero inclinándose con tu mouse. Para marcas que quieren impresionar.', dur:'600–1200 ms', ease:'cubic-bezier(.7,0,.2,1)', tech:'GSAP, Three.js / Spline', price:'$15,900', curve:'M4 84 C 120 84, 60 6, 196 6'}
+  };
+  function play(){
+    browser.classList.remove('play'); void browser.offsetWidth; browser.classList.add('play');
+    var el = document.getElementById('count'), target = 1240;
+    if (browser.dataset.level === 'suave' || reduce){ el.textContent = target.toLocaleString('es-MX'); return; }
+    var t0 = null;
+    function step(t){ if (!t0) t0 = t; var p = Math.min(1, (t - t0) / 1200); el.textContent = Math.round(target * (1 - Math.pow(1 - p, 3))).toLocaleString('es-MX'); if (p < 1) requestAnimationFrame(step); }
+    requestAnimationFrame(step);
+  }
+  function setLevel(l){
+    browser.dataset.level = l; browser.style.transform = '';
+    document.querySelectorAll('[data-l]').forEach(function(b){ b.setAttribute('aria-pressed', b.dataset.l === l); });
+    var d = LEVELS[l];
+    ['name','desc','dur','ease','tech','price'].forEach(function(k){ document.getElementById('sp-' + k).textContent = d[k]; });
+    var path = document.getElementById('sp-curve'); path.setAttribute('d', d.curve);
+    if (!reduce && path.animate) path.animate([{strokeDashoffset:400},{strokeDashoffset:0}], {duration:900, easing:'cubic-bezier(.7,0,.2,1)'});
+    play();
+  }
+  document.querySelectorAll('[data-l]').forEach(function(b){ b.addEventListener('click', function(){ setLevel(b.dataset.l); }); });
+  play();
+  var sc = document.getElementById('scursor');
+  site.addEventListener('pointermove', function(e){
+    if (browser.dataset.level !== 'inmersivo' || reduce) return;
+    var r = site.getBoundingClientRect(), x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
+    browser.style.transform = 'rotateY(' + (x * 8) + 'deg) rotateX(' + (-y * 6) + 'deg)';
+    sc.style.left = (e.clientX - r.left) + 'px'; sc.style.top = (e.clientY - r.top) + 'px';
+  });
+  site.addEventListener('pointerleave', function(){ browser.style.transform = ''; });
+
+  /* ---------- Precios ---------- */
+  var mode = 'unico', lvl = 2;
+  var P = [
+    {key:'go', tag:'Kinetia Go', name:'Landing page', unico:[6900,9900,15900], care:790, eng:1990, items:['1 página, hasta 7 secciones','Formulario y botón de WhatsApp','SEO básico y Google Analytics','Entrega en 7–10 días hábiles'], careItems:['Hosting, dominio y SSL incluidos','2 cambios de texto o imagen al mes','Reporte mensual de visitas']},
+    {key:'pro', tag:'Kinetia Pro', name:'Sitio corporativo', unico:[16900,22900,34900], care:1890, eng:4900, star:true, items:['5 a 8 páginas con blog editable','SEO on-page y Google Business','Integración con CRM o agenda','Entrega en 3–4 semanas'], careItems:['Todo lo de Go Care','3 horas de cambios al mes','2 artículos de blog y revisión SEO']},
+    {key:'shop', tag:'Kinetia Shop', name:'Tienda en línea', unico:[21900,29900,44900], care:3490, eng:6900, items:['Shopify, Tiendanube o WooCommerce','50 productos cargados','Mercado Pago, Stripe, OXXO y SPEI','Entrega en 4–6 semanas'], careItems:['Gestionamos tu catálogo: 30 altas o cambios al mes','Precios, inventario y 2 banners de promoción','Reporte mensual de ventas']}
+  ];
+  var SURCHARGE = [0,300,900], LNAMES = ['Suave','Dinámico','Inmersivo'];
+  var fmt = function(n){ return '$' + n.toLocaleString('es-MX'); };
+  function tilt(card){
+    if (!finePointer || reduce) return;
+    card.addEventListener('pointermove', function(e){
+      var r = card.getBoundingClientRect(), x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
+      card.style.transform = 'rotateY(' + ((x - .5) * 10) + 'deg) rotateX(' + ((.5 - y) * 8) + 'deg) translateZ(0)';
+      card.style.setProperty('--gx', (x * 100) + '%'); card.style.setProperty('--gy', (y * 100) + '%');
+    });
+    card.addEventListener('pointerleave', function(){ card.style.transform = ''; });
+  }
+  function countTo(el, to, suffix){
+    if (reduce){ el.innerHTML = fmt(to) + suffix; return; }
+    var from = +(el.dataset.v || to * .6), t0 = null; el.dataset.v = to;
+    function st(t){ if (!t0) t0 = t; var p = Math.min(1, (t - t0) / 600), e = 1 - Math.pow(1 - p, 3); el.innerHTML = fmt(Math.round(from + (to - from) * e)) + suffix; if (p < 1) requestAnimationFrame(st); }
+    requestAnimationFrame(st);
+  }
+  var built = false;
+  function render(){
+    if (!built){
+      document.getElementById('cards').innerHTML = P.map(function(p){
+        return '<article class="card' + (p.star ? ' star' : '') + '" data-k="' + p.key + '">' +
+          (p.star ? '<span class="badge">El más pedido</span>' : '') +
+          '<span class="tag"></span><h3>' + p.name + '</h3><div class="price"></div><p class="price-note"></p><ul></ul>' +
+          '<a class="btn ' + (p.star ? 'btn-lime' : 'btn-ghost') + '" href="#contacto" data-pick="' + p.key + '">Quiero este <span class="arr">→</span></a></article>';
+      }).join('');
+      document.querySelectorAll('.card').forEach(tilt);
+      document.querySelectorAll('[data-pick]').forEach(function(a){ a.addEventListener('click', function(){ document.getElementById('f-prod').selectedIndex = {go:0,pro:1,shop:2}[a.dataset.pick]; }); });
+      built = true;
+    }
+    P.forEach(function(p){
+      var c = document.querySelector('.card[data-k="' + p.key + '"]');
+      c.querySelector('.tag').textContent = p.tag + ' · ' + LNAMES[lvl];
+      var unico = mode === 'unico';
+      countTo(c.querySelector('.price'), unico ? p.unico[lvl] : p.care + SURCHARGE[lvl], unico ? '' : '<small> /mes</small>');
+      c.querySelector('.price-note').textContent = unico ? '50% al arrancar · 50% al aprobar' : 'Enganche ' + fmt(p.eng) + ' · 12 meses';
+      c.querySelector('ul').innerHTML = (unico ? p.items : p.careItems).map(function(i){ return '<li>' + i + '</li>'; }).join('');
+    });
+    document.getElementById('fine').textContent = mode === 'unico'
+      ? 'Incluye 30 días de garantía. Después: cambios a $450/hora o Kinetia Soporte por $590/mes.'
+      : 'Nivel Dinámico suma $300/mes e Inmersivo $900/mes. Shop Care Plus: $5,990/mes con hasta 100 productos y campañas de temporada.';
+  }
+  document.querySelectorAll('[data-m]').forEach(function(b){ b.addEventListener('click', function(){ mode = b.dataset.m; document.querySelectorAll('[data-m]').forEach(function(x){ x.setAttribute('aria-pressed', x === b); }); render(); }); });
+  document.querySelectorAll('[data-p]').forEach(function(b){ b.addEventListener('click', function(){ lvl = +b.dataset.p; document.querySelectorAll('[data-p]').forEach(function(x){ x.setAttribute('aria-pressed', x === b); }); render(); }); });
+  render();
+  document.querySelectorAll('.price').forEach(function(el, i){ el.innerHTML = fmt(P[i].unico[lvl]); el.dataset.v = P[i].unico[lvl]; });
+
+  /* ---------- Formulario de demostración ---------- */
+  document.getElementById('lead').addEventListener('submit', function(e){
+    e.preventDefault();
+    var n = document.getElementById('f-name'), b = document.getElementById('f-biz'), ok = document.getElementById('ok');
+    ok.hidden = false;
+    if (!n.value.trim() || !b.value.trim()){ ok.textContent = 'Escribe tu nombre y el de tu negocio para agendar.'; (n.value.trim() ? b : n).focus(); return; }
+    ok.textContent = 'Listo, ' + n.value.trim().split(' ')[0] + '. En el sitio real esta solicitud llega a nuestro WhatsApp y te contactamos en menos de 24 h hábiles.';
+  });
+})();
+</script>
+</body>
+</html>
