@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="description" content="KINETIA: páginas web con animación UI/UX. Landing, sitio corporativo y tienda en línea con precio publicado.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 64 64%27%3E%3Ccircle cx=%2732%27 cy=%2732%27 r=%2729%27 fill=%27%23140E2E%27 stroke=%27%238B5CFF%27 stroke-width=%273%27/%3E%3Cpolygon points=%2723,17 31.5,17 26,46 17.5,46%27 fill=%27%23C9B5FF%27/%3E%3Cpolygon points=%2729.5,32 46,17 55,17 39,31.6 49.5,46 40.5,46%27 fill=%27%23C9B5FF%27/%3E%3C/svg%3E">
 <style>html,body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 </head>
 <body>
@@ -11,7 +12,7 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Michroma&display=swap">
 <style>
 /* Layout: negro de laboratorio. Campo de partículas 3D vivo detrás del héroe, HUD en las esquinas, secciones como paneles de instrumento; una sola columna de 1160px */
 :root{
@@ -52,13 +53,27 @@ a{color:inherit}
 body::before{content:""; position:fixed; inset:0 0 auto; height:env(safe-area-inset-top, 0px); z-index:10; background:var(--bg)}
 header.top{position:sticky; top:env(safe-area-inset-top, 0px); z-index:40; background:rgba(5,5,10,.7); backdrop-filter:blur(14px) saturate(140%); border-bottom:1px solid var(--line-2)}
 .top .wrap{display:flex; align-items:center; justify-content:space-between; gap:16px; padding-block:12px}
-.logo{display:flex; align-items:center; gap:10px; text-decoration:none}
-.logo svg{width:30px; height:30px; flex:none; filter:drop-shadow(0 0 8px var(--violet-glow))}
-.logo b{font:700 18px/1 var(--display); letter-spacing:.22em}
-.logo .k-a,.logo .k-b{transform-box:fill-box; transform-origin:left center; animation:kin 1000ms var(--ease) both}
-.logo .k-b{animation-delay:140ms}
-.logo:hover .k-a,.logo:hover .k-b{animation:kin 700ms var(--ease)}
-@keyframes kin{0%{transform:translateX(-60%); opacity:0} 100%{transform:none; opacity:1}}
+.logo{display:flex; align-items:center; gap:12px; text-decoration:none; color:#F3F2FA}
+.mark{width:40px; height:40px; flex:none; overflow:visible}
+.mark .k-ring{transform-box:fill-box; transform-origin:center; animation:ringspin 9s linear infinite}
+.mark .k-glyph{transform-box:fill-box; transform-origin:center; animation:kin 900ms var(--ease) both}
+.mark .k-slash{transform-box:fill-box; transform-origin:right center; animation:slash 900ms 250ms var(--ease) both}
+.logo:hover .k-glyph{animation:kin 700ms var(--ease)}
+.logo:hover .k-slash{animation:slash 700ms 120ms var(--ease) both}
+@keyframes ringspin{to{transform:rotate(360deg)}}
+@keyframes kin{0%{transform:translateX(-30%) skewX(-12deg); opacity:0} 100%{transform:none; opacity:1}}
+@keyframes slash{0%{transform:scaleX(0); opacity:0} 100%{transform:none; opacity:1}}
+.wm{display:grid; gap:5px}
+.wm b{font:400 17px/1 "Michroma", var(--display); letter-spacing:.07em; color:#F3F2FA; text-shadow:0 0 18px rgba(139,92,255,.35)}
+.wm small{font:500 7.5px/1 var(--display); letter-spacing:.56em; color:#A9A7C0; text-transform:uppercase}
+.logo-big{display:flex; align-items:center; gap:18px}
+.logo-big .mark{width:72px; height:72px}
+.logo-big .wm b{font-size:30px}
+.logo-big .wm small{font-size:11px; letter-spacing:.62em}
+.wa-float{position:fixed; z-index:45; right:calc(18px + env(safe-area-inset-right, 0px)); bottom:calc(18px + env(safe-area-inset-bottom, 0px)); display:flex; align-items:center; gap:10px; background:#25D366; color:#05140A; font:600 14px/1 var(--text); text-decoration:none; padding:12px 16px 12px 12px; border-radius:999px; box-shadow:0 10px 30px -8px rgba(37,211,102,.6); transition:transform 250ms var(--ease)}
+.wa-float:hover{transform:translateY(-3px)}
+.wa-float svg{width:22px; height:22px}
+@media (max-width:560px){.wa-float span{display:none} .wa-float{padding:12px}}
 nav.links{display:flex; gap:26px; font:500 13px/1 var(--mono); letter-spacing:.06em; text-transform:uppercase}
 nav.links a{text-decoration:none; color:var(--muted); position:relative; padding-block:6px}
 nav.links a::after{content:""; position:absolute; left:0; right:0; bottom:0; height:1px; background:var(--lime); transform:scaleX(0); transform-origin:right; transition:transform 300ms var(--ease)}
@@ -93,7 +108,8 @@ nav.links a:hover::after{transform:scaleX(1); transform-origin:left}
 .glow{color:transparent; background:linear-gradient(100deg, var(--violet) 10%, #C9B5FF 45%, var(--lime) 90%); -webkit-background-clip:text; background-clip:text; background-size:200% 100%; animation:sheen 6s linear infinite}
 @keyframes sheen{to{background-position:-200% 0}}
 .hero-row{display:grid; grid-template-columns:minmax(0,1fr) auto; gap:32px; align-items:end; margin-top:36px}
-.hero-row p{max-width:52ch; color:var(--muted); font-size:18px}
+.hero-row p{max-width:52ch; color:#B4B2CA; font-size:18px; text-shadow:0 0 14px var(--bg), 0 0 4px var(--bg)}
+@media (max-width:700px){#field{opacity:.55}}
 .hero-ctas{display:flex; gap:12px; flex-wrap:wrap}
 .stats{display:flex; gap:40px; flex-wrap:wrap; margin-top:56px; padding-top:22px; border-top:1px solid var(--line-2)}
 .stats div{display:grid; gap:4px}
@@ -236,7 +252,11 @@ details p{margin-top:10px; color:var(--muted); font-size:15px}
   background:radial-gradient(600px circle at 0% 0%, rgba(139,92,255,.35), transparent 60%), radial-gradient(500px circle at 100% 100%, rgba(198,255,61,.12), transparent 60%), var(--panel)}
 .cta h2{font-size:clamp(32px, 4.4vw, 54px)}
 .cta > div > p{margin-top:16px; color:var(--muted); max-width:40ch}
-.cta .wa{margin-top:24px; font:12px/1.5 var(--mono); color:var(--dim); text-transform:uppercase; letter-spacing:.08em}
+.cta .wa{margin-top:28px; display:grid; gap:6px}
+.cta .wa span{font:11px/1 var(--mono); color:var(--dim); text-transform:uppercase; letter-spacing:.1em}
+.cta .wa a{font:700 26px/1.1 var(--display); color:var(--ink); text-decoration:none; letter-spacing:.01em}
+.cta .wa a:hover{color:#25D366}
+.ok a{color:inherit; font-weight:700}
 form{display:grid; gap:12px}
 label{font:500 11px/1 var(--mono); letter-spacing:.1em; text-transform:uppercase; color:var(--muted); display:grid; gap:8px}
 input,select,textarea{font:15px/1.4 var(--text); padding:13px 14px; border-radius:10px; border:1px solid var(--line-2); background:rgba(5,5,10,.6); color:var(--ink); width:100%; transition:border-color 200ms, box-shadow 200ms; text-transform:none; letter-spacing:0}
@@ -280,13 +300,26 @@ footer{padding-block:56px 40px; color:var(--dim); font:12px/1.5 var(--mono); let
 
 <header class="top">
   <div class="wrap">
-    <a class="logo" href="#inicio" aria-label="KINETIA, inicio">
-      <svg viewBox="0 0 32 32" aria-hidden="true">
-        <rect x="4" y="3" width="6" height="26" rx="2" fill="#EEEDF7"/>
-        <path class="k-a" d="M12 16 L24 3 H30 L18 16 Z" fill="#8B5CFF"/>
-        <path class="k-b" d="M12 16 L24 29 H30 L18 16 Z" fill="#C6FF3D"/>
-      </svg>
-      <b>KINETIA</b>
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+      <defs>
+        <linearGradient id="kRing" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#E05BFF"/><stop offset=".5" stop-color="#8B5CFF"/><stop offset="1" stop-color="#3FD8FF"/></linearGradient>
+        <radialGradient id="kCore" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#3B2C7E"/><stop offset="1" stop-color="#140E2E"/></radialGradient>
+        <linearGradient id="kGlyph" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#E4DAFF"/><stop offset=".55" stop-color="#B49BFF"/><stop offset="1" stop-color="#8B5CFF"/></linearGradient>
+        <filter id="kGlow" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="2.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+      </defs>
+      <symbol id="kMark" viewBox="0 0 64 64">
+        <circle cx="32" cy="32" r="28" fill="url(#kCore)"/>
+        <circle class="k-ring" cx="32" cy="32" r="28.5" fill="none" stroke="url(#kRing)" stroke-width="2.6" filter="url(#kGlow)"/>
+        <g class="k-glyph" fill="url(#kGlyph)">
+          <polygon points="23,17 31.5,17 26,46 17.5,46"/>
+          <polygon points="29.5,32 46,17 55,17 39,31.6 49.5,46 40.5,46"/>
+        </g>
+        <polygon class="k-slash" points="7,34.4 36,30.2 35.4,32.6 7,35.8" fill="#E4DAFF"/>
+      </symbol>
+    </svg>
+    <a class="logo" href="#inicio" aria-label="KINETIA Estudio Web, inicio">
+      <svg class="mark" aria-hidden="true"><use href="#kMark"/></svg>
+      <span class="wm"><b>KINETIA</b><small>Estudio web</small></span>
     </a>
     <nav class="links" aria-label="Secciones">
       <a href="#niveles">Niveles</a><a href="#precios">Precios</a><a href="#proceso">Proceso</a><a href="#faq">Preguntas</a>
@@ -454,12 +487,16 @@ footer{padding-block:56px 40px; color:var(--dim); font:12px/1.5 var(--mono); let
         <p class="eyebrow">Diagnóstico gratis · 30 min</p>
         <h2 style="margin-top:16px">Cuéntanos de tu negocio y te decimos qué web te conviene.</h2>
         <p>Respondemos en menos de 24 horas hábiles con el paquete recomendado y su precio exacto.</p>
-        <p class="wa">WhatsApp y correo: se agregan al publicar el sitio real</p>
+        <p class="wa"><span>WhatsApp directo</span><a href="https://wa.me/525614141914?text=Hola%20KINETIA%2C%20quiero%20cotizar%20mi%20p%C3%A1gina%20web" target="_blank" rel="noopener">56 1414 1914</a></p>
       </div>
       <form id="lead" novalidate>
         <div class="row2">
           <label for="f-name">Nombre<input id="f-name" name="name" required placeholder="Ana Ruiz" autocomplete="name"></label>
           <label for="f-biz">Negocio<input id="f-biz" name="biz" required placeholder="Panadería Trigal"></label>
+        </div>
+        <div class="row2">
+          <label for="f-tel">Tu WhatsApp<input id="f-tel" name="tel" type="tel" required placeholder="55 1234 5678" autocomplete="tel" inputmode="tel"></label>
+          <label for="f-mail">Correo (opcional)<input id="f-mail" name="mail" type="email" placeholder="ana@trigal.mx" autocomplete="email"></label>
         </div>
         <label for="f-prod">¿Qué necesitas?
           <select id="f-prod" name="prod">
@@ -470,7 +507,7 @@ footer{padding-block:56px 40px; color:var(--dim); font:12px/1.5 var(--mono); let
           </select>
         </label>
         <label for="f-msg">Mensaje<textarea id="f-msg" name="msg" rows="3" placeholder="Vendemos pan en 2 sucursales y queremos pedidos en línea."></textarea></label>
-        <button class="btn btn-lime" type="submit" style="justify-content:center">Agendar diagnóstico <span class="arr">→</span></button>
+        <button class="btn btn-lime" type="submit" id="f-send" style="justify-content:center">Agendar diagnóstico <span class="arr">→</span></button>
         <p class="ok" id="ok" hidden></p>
       </form>
     </div>
@@ -478,9 +515,17 @@ footer{padding-block:56px 40px; color:var(--dim); font:12px/1.5 var(--mono); let
 </main>
 
 <footer class="wrap">
-  <span>© 2026 KINETIA · Webs que se mueven. Negocios que avanzan.</span>
-  <span>Sitio demo · Precios MXN más IVA</span>
+  <a class="logo logo-big" href="#inicio" aria-label="KINETIA Estudio Web, volver arriba">
+    <svg class="mark" aria-hidden="true"><use href="#kMark"/></svg>
+    <span class="wm"><b>KINETIA</b><small>Estudio web</small></span>
+  </a>
+  <span>© 2026 KINETIA · Webs que se mueven. Negocios que avanzan.<br>WhatsApp 56 1414 1914 · Precios MXN más IVA</span>
 </footer>
+
+<a class="wa-float" href="https://wa.me/525614141914?text=Hola%20KINETIA%2C%20quiero%20cotizar%20mi%20p%C3%A1gina%20web" target="_blank" rel="noopener" aria-label="Escribir por WhatsApp al 56 1414 1914">
+  <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.2.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.6 2.6 0 0 0 1.7-1.2 2.1 2.1 0 0 0 .1-1.2c0-.1-.2-.2-.4-.3Z"/></svg>
+  <span>56 1414 1914</span>
+</a>
 
 <script>
 (function(){
@@ -661,13 +706,30 @@ footer{padding-block:56px 40px; color:var(--dim); font:12px/1.5 var(--mono); let
   render();
   document.querySelectorAll('.price').forEach(function(el, i){ el.innerHTML = fmt(P[i].unico[lvl]); el.dataset.v = P[i].unico[lvl]; });
 
-  /* ---------- Formulario de demostración ---------- */
+  /* ---------- Formulario: alerta por correo (FormSubmit) + WhatsApp ---------- */
+  var WA = '525614141914';
+  var ALERTA = 'https://formsubmit.co/ajax/' + ['joshua6782010', 'gmail.com'].join('@');
   document.getElementById('lead').addEventListener('submit', function(e){
     e.preventDefault();
-    var n = document.getElementById('f-name'), b = document.getElementById('f-biz'), ok = document.getElementById('ok');
+    var v = function(id){ return document.getElementById(id).value.trim(); };
+    var ok = document.getElementById('ok'), send = document.getElementById('f-send');
+    var name = v('f-name'), biz = v('f-biz'), tel = v('f-tel'), mail = v('f-mail'), prod = v('f-prod'), msg = v('f-msg');
     ok.hidden = false;
-    if (!n.value.trim() || !b.value.trim()){ ok.textContent = 'Escribe tu nombre y el de tu negocio para agendar.'; (n.value.trim() ? b : n).focus(); return; }
-    ok.textContent = 'Listo, ' + n.value.trim().split(' ')[0] + '. En el sitio real esta solicitud llega a nuestro WhatsApp y te contactamos en menos de 24 h hábiles.';
+    if (!name || !biz || tel.replace(/\D/g, '').length < 10){
+      ok.textContent = 'Escribe tu nombre, tu negocio y un WhatsApp de 10 dígitos para agendar.';
+      document.getElementById(!name ? 'f-name' : !biz ? 'f-biz' : 'f-tel').focus(); return;
+    }
+    var texto = 'Hola KINETIA, soy ' + name + ' de ' + biz + '. Me interesa: ' + prod + '.' + (msg ? ' ' + msg : '') + ' Mi WhatsApp: ' + tel;
+    var waLink = 'https://wa.me/' + WA + '?text=' + encodeURIComponent(texto);
+    var waHtml = ' <a href="' + waLink + '" target="_blank" rel="noopener">Continuar por WhatsApp →</a>';
+    send.disabled = true; ok.textContent = 'Enviando…';
+    fetch(ALERTA, {method:'POST', headers:{'Content-Type':'application/json', 'Accept':'application/json'}, body:JSON.stringify({
+      _subject:'Nuevo diagnóstico KINETIA: ' + biz, _template:'table', _captcha:'false',
+      Nombre:name, Negocio:biz, WhatsApp:tel, Correo:mail || '(no dio)', Producto:prod, Mensaje:msg || '(sin mensaje)'
+    })}).then(function(r){ if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(function(){ ok.innerHTML = 'Listo, ' + name.split(' ')[0] + '. Recibimos tu solicitud y te escribimos en menos de 24 h hábiles.' + waHtml; document.getElementById('lead').reset(); })
+      .catch(function(){ ok.innerHTML = 'No pudimos enviar el formulario desde aquí. Mándanos tu mensaje directo:' + waHtml; })
+      .finally(function(){ send.disabled = false; });
   });
 })();
 </script>
